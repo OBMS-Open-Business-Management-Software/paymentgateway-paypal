@@ -5422,16 +5422,16 @@
         },
         {
             "name": "obms/composer-installer",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OBMS-Open-Business-Management-Software/composer-installer.git",
-                "reference": "33a76f67d48e21a63a6eb5879cf395c89b3419f9"
+                "reference": "6910b8c6f8eaaa045391d70bd9acf89701b1f1f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OBMS-Open-Business-Management-Software/composer-installer/zipball/33a76f67d48e21a63a6eb5879cf395c89b3419f9",
-                "reference": "33a76f67d48e21a63a6eb5879cf395c89b3419f9",
+                "url": "https://api.github.com/repos/OBMS-Open-Business-Management-Software/composer-installer/zipball/6910b8c6f8eaaa045391d70bd9acf89701b1f1f9",
+                "reference": "6910b8c6f8eaaa045391d70bd9acf89701b1f1f9",
                 "shasum": ""
             },
             "require": {
@@ -5468,7 +5468,7 @@
                 "issues": "https://github.com/OBMS-Open-Business-Management-Software/core/issues",
                 "source": "https://github.com/OBMS-Open-Business-Management-Software/core"
             },
-            "time": "2025-03-27T19:28:04+00:00"
+            "time": "2025-03-27T20:20:14+00:00"
         },
         {
             "name": "obms/core",
