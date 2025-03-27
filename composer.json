@@ -11,6 +11,9 @@
         "issues": "https://github.com/OBMS-Open-Business-Management-Software/core/issues",
         "source": "https://github.com/OBMS-Open-Business-Management-Software/core"
     },
+    "extra": {
+        "dir": "PayPal"
+    },
     "require": {
         "php": "^8.2",
         "obms/composer-installer": "^2.0",
