@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\PaymentGateways\PayPal\Helpers;
+namespace OBMS\PaymentGateways\PayPal\Helpers;
 
 use Exception;
 
