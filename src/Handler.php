@@ -45,6 +45,16 @@ class Handler implements Gateway
     }
 
     /**
+     * Get payment method path.
+     *
+     * @return string
+     */
+    public function folderName(): string
+    {
+        return dirname(__FILE__);
+    }
+
+    /**
      * Get payment method name.
      */
     public function name(): string
