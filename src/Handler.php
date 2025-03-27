@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use OBMS\ModuleSDK\Payments\Gateway;
 use OBMS\ModuleSDK\Payments\Traits\HasSettings;
 use OBMS\PaymentGateways\PayPal\Helpers\PaypalIPNClient;
+use OBMS\PaymentGateways\PayPal\Helpers\PaypalMerchantClient;
 
 /**
  * Class Handler.
@@ -28,10 +29,10 @@ class Handler implements Gateway
     public function parameters(): Collection
     {
         return collect([
-            'username' => __('paypal.username'),
-            'publickey' => __('paypal.public_key'),
+            'username'   => __('paypal.username'),
+            'publickey'  => __('paypal.public_key'),
             'privatekey' => __('paypal.private_key'),
-            'api_type' => __('paypal.api_type'),
+            'api_type'   => __('paypal.api_type'),
         ]);
     }
 
@@ -71,28 +72,38 @@ class Handler implements Gateway
      * Initialize a new payment. This should either return a result array or
      * redirect the user directly.
      *
-     * @param  mixed  $payment  Either an invoice object or the amount which the user has to pay
-     * @param  string  $pingbackUrl
+     * @param mixed  $type
+     * @param mixed  $method
+     * @param mixed  $client
+     * @param mixed  $description
+     * @param mixed  $identification
+     * @param mixed  $payment          Either an invoice object or the amount which the user has to pay
+     * @param mixed  $invoice
+     * @param mixed  $returnCheckUrl
+     * @param mixed  $returnSuccessUrl
+     * @param mixed  $returnFailedUrl
+     * @param mixed  $returnNeutral
+     * @param string $pingbackUrl
      */
     public function initialize($type, $method, $client, $description, $identification, $payment, $invoice, $returnCheckUrl, $returnSuccessUrl, $returnFailedUrl, $returnNeutral, $pingbackUrl): ?array
     {
-        $mtid = $description.'_'.rand('1', '9999999');
-        $get = '?payment='.$mtid.'&amount='.$payment;
-        $returnCheckUrl = $returnCheckUrl.$get;
+        $mtid           = $description . '_' . rand('1', '9999999');
+        $get            = '?payment=' . $mtid . '&amount=' . $payment;
+        $returnCheckUrl = $returnCheckUrl . $get;
 
-        $api = new PaypalMerchantClient($method);
+        $api   = new PaypalMerchantClient($method);
         $query = $api->buildQuery([
             'PAYMENTACTION' => 'Sale',
-            'AMT' => $payment,
-            'RETURNURL' => $returnCheckUrl,
-            'CANCELURL' => $returnCheckUrl,
-            'DESC' => $description,
-            'NOSHIPPING' => '1',
-            'ALLOWNOTE' => '1',
-            'CURRENCYCODE' => 'EUR',
-            'METHOD' => 'SetExpressCheckout',
-            'INVNUM' => $description,
-            'CUSTOM' => $mtid,
+            'AMT'           => $payment,
+            'RETURNURL'     => $returnCheckUrl,
+            'CANCELURL'     => $returnCheckUrl,
+            'DESC'          => $description,
+            'NOSHIPPING'    => '1',
+            'ALLOWNOTE'     => '1',
+            'CURRENCYCODE'  => 'EUR',
+            'METHOD'        => 'SetExpressCheckout',
+            'INVNUM'        => $description,
+            'CUSTOM'        => $mtid,
         ]);
         $result = $api->response($query);
 
@@ -100,22 +111,22 @@ class Handler implements Gateway
             return null;
         }
         $response = $result->getContent();
-        $return = $api->responseParse($response);
+        $return   = $api->responseParse($response);
 
         if ($return['ACK'] !== 'Success') {
             return [
-                'status' => 'success',
-                'redirect' => $returnFailedUrl,
-                'payment_id' => $mtid,
+                'status'         => 'success',
+                'redirect'       => $returnFailedUrl,
+                'payment_id'     => $mtid,
                 'payment_status' => 'failed',
             ];
         } else {
-            $paymentPanel = $api->getGateway().'cmd=_express-checkout&useraction=commit&token='.$return['TOKEN'];
+            $paymentPanel = $api->getGateway() . 'cmd=_express-checkout&useraction=commit&token=' . $return['TOKEN'];
 
             return [
-                'status' => 'success',
-                'redirect' => $paymentPanel,
-                'payment_id' => $mtid,
+                'status'         => 'success',
+                'redirect'       => $paymentPanel,
+                'payment_id'     => $mtid,
                 'payment_status' => 'waiting',
             ];
         }
@@ -124,22 +135,26 @@ class Handler implements Gateway
     /**
      * This function is called when the user returns to the page. It may already
      * check for the current payment status.
+     *
+     * @param mixed $type
+     * @param mixed $method
+     * @param mixed $client
      */
     public function return($type, $method, $client): array
     {
-        $api = new PaypalMerchantClient($method);
+        $api    = new PaypalMerchantClient($method);
         $return = $api->doPayment();
 
         if ($return['ACK'] == 'Success') {
             return [
-                'status' => 'success',
-                'payment_id' => $_GET['payment'],
+                'status'         => 'success',
+                'payment_id'     => $_GET['payment'],
                 'payment_status' => 'success',
             ];
         } else {
             return [
-                'status' => 'success',
-                'payment_id' => $_GET['payment'],
+                'status'         => 'success',
+                'payment_id'     => $_GET['payment'],
                 'payment_status' => 'failed',
             ];
         }
@@ -150,12 +165,15 @@ class Handler implements Gateway
      * It may already check for the current payment status. Since PayPal doesn't provide
      * pingback functionality this is disabled.
      *
+     * @param mixed $type
+     * @param mixed $method
+     * @param mixed $client
      *
      * @throws Exception
      */
     public function pingback($type, $method, $client): array
     {
-        $ipn = new PaypalIPNClient;
+        $ipn = new PaypalIPNClient();
 
         if ($method->api_type == 'test') {
             $ipn->useSandbox();
@@ -169,8 +187,8 @@ class Handler implements Gateway
                 $_POST['payment_status'] == 'Expired'
             ) {
                 return [
-                    'status' => 'success',
-                    'payment_id' => $_POST['custom'],
+                    'status'         => 'success',
+                    'payment_id'     => $_POST['custom'],
                     'payment_status' => 'failed',
                 ];
             } elseif (
@@ -179,8 +197,8 @@ class Handler implements Gateway
                 $_POST['payment_status'] == 'Voided'
             ) {
                 return [
-                    'status' => 'success',
-                    'payment_id' => $_POST['custom'],
+                    'status'         => 'success',
+                    'payment_id'     => $_POST['custom'],
                     'payment_status' => 'revoked',
                 ];
             } elseif (
@@ -189,16 +207,16 @@ class Handler implements Gateway
                 $_POST['payment_status'] == 'Processed'
             ) {
                 return [
-                    'status' => 'success',
-                    'payment_id' => $_POST['custom'],
+                    'status'         => 'success',
+                    'payment_id'     => $_POST['custom'],
                     'payment_status' => 'success',
                 ];
             }
         }
 
         return [
-            'status' => 'false',
-            'payment_id' => null,
+            'status'         => 'false',
+            'payment_id'     => null,
             'payment_status' => null,
         ];
     }
