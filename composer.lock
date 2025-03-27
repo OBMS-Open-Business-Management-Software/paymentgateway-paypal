@@ -5578,16 +5578,16 @@
         },
         {
             "name": "obms/module-sdk",
-            "version": "v1.0.2",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/OBMS-Open-Business-Management-Software/module-sdk.git",
-                "reference": "e7b4ba683c61035e9fd676588e09123023b94b70"
+                "reference": "1c8d60288f33e789b866f31ea5d4e7e50c34be69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OBMS-Open-Business-Management-Software/module-sdk/zipball/e7b4ba683c61035e9fd676588e09123023b94b70",
-                "reference": "e7b4ba683c61035e9fd676588e09123023b94b70",
+                "url": "https://api.github.com/repos/OBMS-Open-Business-Management-Software/module-sdk/zipball/1c8d60288f33e789b866f31ea5d4e7e50c34be69",
+                "reference": "1c8d60288f33e789b866f31ea5d4e7e50c34be69",
                 "shasum": ""
             },
             "require": {
@@ -5615,9 +5615,9 @@
             ],
             "support": {
                 "issues": "https://github.com/OBMS-Open-Business-Management-Software/module-sdk/issues",
-                "source": "https://github.com/OBMS-Open-Business-Management-Software/module-sdk/tree/v1.0.2"
+                "source": "https://github.com/OBMS-Open-Business-Management-Software/module-sdk/tree/v1.1.0"
             },
-            "time": "2025-03-26T21:46:57+00:00"
+            "time": "2025-03-27T22:19:47+00:00"
         },
         {
             "name": "omnipay/common",
