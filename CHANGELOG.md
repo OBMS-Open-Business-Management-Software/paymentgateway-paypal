@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0](https://github.com/OBMS-Open-Business-Management-Software/paymentgateway-paypal/compare/v1.1.0...v1.2.0) (2025-03-27)
+
+
+### Features
+
+* payment gateway folder name ([e064d9b](https://github.com/OBMS-Open-Business-Management-Software/paymentgateway-paypal/commit/e064d9b5f1e1f85bc7c5ca03f9d317f662bcb8b9))
+
 ## [1.1.0](https://github.com/OBMS-Open-Business-Management-Software/paymentgateway-paypal/compare/v1.0.2...v1.1.0) (2025-03-27)
 
 
